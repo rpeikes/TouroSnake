@@ -2,11 +2,13 @@ package touro.snake;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 public class GardenView extends JComponent {
 
     private final Garden garden;
     public static final int CELL_SIZE = 10;
+    private final Random rand = new Random();
 
     public GardenView(Garden garden) {
         this.garden = garden;
@@ -29,7 +31,7 @@ public class GardenView extends JComponent {
     void paintSnake(Graphics g) {
         g.setColor(Color.RED);
         for (Square s : garden.getSnake().getSquares()) {
-            g.fillRect(s.getX()*CELL_SIZE, s.getY()*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            g.fillRect(s.getX() * CELL_SIZE, s.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
     }
 
@@ -37,11 +39,35 @@ public class GardenView extends JComponent {
         // Berger
         if (garden.getFood() != null) {
             Food food = garden.getFood();
-            g.setColor(Color.LIGHT_GRAY);
-
             int x = food.getX() * CELL_SIZE;
             int y = food.getY() * CELL_SIZE;
-            g.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+            generateRandomColor(g);
+            g.drawOval(x, y, CELL_SIZE, CELL_SIZE);
+            g.fillOval(x, y, CELL_SIZE, CELL_SIZE);
+        }
+    }
+
+    private void generateRandomColor(Graphics g) {
+        int color = rand.nextInt(6);
+        switch (color) {
+            case 0:
+                g.setColor(Color.RED);
+                break;
+            case 1:
+                g.setColor(Color.ORANGE);
+                break;
+            case 2:
+                g.setColor(Color.YELLOW);
+                break;
+            case 3:
+                g.setColor(Color.BLUE);
+                break;
+            case 4:
+                g.setColor(Color.MAGENTA);
+                break;
+            case 5:
+                g.setColor(Color.WHITE);
+                break;
         }
     }
 }
