@@ -31,7 +31,10 @@ public class GardenView extends JComponent {
     void paintSnake(Graphics g) {
         g.setColor(Color.RED);
         for (Square s : garden.getSnake().getSquares()) {
-            g.fillRect(s.getX() * CELL_SIZE, s.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            g.setColor(Color.RED);
+            g.fillRect(s.getX() * CELL_SIZE, s.getY() * CELL_SIZE, CELL_SIZE/2, CELL_SIZE);
+            g.setColor(Color.MAGENTA);
+            g.fillRect(s.getX() * CELL_SIZE + (CELL_SIZE/2), s.getY() * CELL_SIZE, CELL_SIZE/2, CELL_SIZE);
         }
     }
 
