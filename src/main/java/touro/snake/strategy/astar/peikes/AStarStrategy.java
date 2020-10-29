@@ -16,6 +16,7 @@ public class AStarStrategy implements SnakeStrategy {
     @Override
     public void turnSnake(Snake snake, Garden garden) {
         Node start = new Node(snake.getHead());
+        Node current = new Node(snake.getHead());
         Direction directions[] = Direction.values();
         Food food = garden.getFood();
 
@@ -23,48 +24,46 @@ public class AStarStrategy implements SnakeStrategy {
         List<Node> open = new ArrayList<Node>();
         List<Node> closed = new ArrayList<Node>();
         // Add the start node
-        open.add(start);
+        open.add(current);
 
-        // Loop until you find the end// the openList is not empty
+        // Loop until you find the end/the openList is not empty
         while (!open.isEmpty()) {
-            // Get the current node
-            // let the currentNode equal the node with the least f value
+            if (food == null) {
+                break;
+            }
+            // Get the current node-let the currentNode equal the node with the least f value-Initialize child with current/start as its parent
+            current = open.get(0);
+            int currentIndex = 0;
+            for (Node node : open) {
+                if (node.getCost() < current.getCost()) {
+                    current = node;
+                }
+            }
 
-            //Initialize child with current/start as its parent
-            start = open.get(0);
-            if (snake.contains(start) || !start.inBounds() || closed.contains(start)) {
-                continue;
-            }
-            if (!open.contains(start)) {
-                open.add(start);
-            } else {
-                //Compare Costs??
-            }
             //remove the currentNode from the openList
-            open.remove(start);
+            open.remove(current);
             //add the currentNode to the closedList
-            closed.add(start);
-
+            closed.add(current);
 
             //if currentNode is the goal
-            if (start.getY() == food.getY() && start.getX() == food.getX()) {
+            if (current.getY() == food.getY() && current.getX() == food.getX()) {
                 //Congrats! You've found the end! Backtrack to get path
                 Stack<Node> route = new Stack<Node>();
-                while (start.getY() == start.getY() && start.getX() == start.getX()) {
-                    route.add(start);
-                    start = start.getParent();
+                while (!(current.getY() == start.getY()) && !(current.getX() == start.getX())) {
+                    route.add(current);
+                    current = current.getParent();
                 }
                 while (!route.isEmpty()) {
-                    Direction routeDirection = start.directionTo(route.peek());
+                    Direction routeDirection = current.directionTo(route.peek());
                     snake.turnTo(routeDirection);
-                    start = route.pop();
+                    current = route.pop();
                 }
             }
 
             // Generate children-let the children of the currentNode equal the adjacent-for each child in the children
             for (Direction direction : directions) {
                 //Initialize child with current/start as its parent
-                Node neighbor = new Node(start.moveTo(direction), start, food);
+                Node neighbor = new Node(current.moveTo(direction), current, food);
 
                 // Child is on the closedList--if child is in the closedList--continue to beginning of for loop
                 if (snake.contains(neighbor) || !neighbor.inBounds() || closed.contains(neighbor)) {
@@ -78,11 +77,12 @@ public class AStarStrategy implements SnakeStrategy {
                     // Child is already in openList--if child.position is in the openList's nodes positions
                 } else {
                     //Compare Costs
-                    if (neighbor.getCost() > open.get(open.indexOf(neighbor)).getCost()) {
-                        continue;
+                    for (Node node : open) {
+                        if (neighbor.getCost() > node.getCost()) {
+                            continue;
+                        }
                     }
                 }
-                // Child is already in openList--continue to beginning of for loop
                 open.add(neighbor);
             }
         }
