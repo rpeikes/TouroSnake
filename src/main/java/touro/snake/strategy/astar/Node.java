@@ -43,19 +43,7 @@ public class Node extends Square {
         return fromStart * 7 + fromEnd;
     }
 
-    public Node moveTo(Direction direction){
-        switch (direction) {
-            case North:
-                return new Node(super.getX(), super.getY() - 1);
-            case East:
-                return new Node(super.getX() + 1, super.getY());
-            case South:
-                return new Node(super.getX(), super.getY() + 1);
-            case West:
-                return new Node(super.getX() - 1, super.getY());
-            default:
-                throw new RuntimeException(direction + " is not a known Direction");
-        }
+
     }
 
-}
+
