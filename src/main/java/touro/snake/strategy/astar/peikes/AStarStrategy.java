@@ -6,6 +6,7 @@ import touro.snake.strategy.astar.Node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Chooses a direction based on most effcient path as determined by A*  algorithm
@@ -19,79 +20,71 @@ public class AStarStrategy implements SnakeStrategy {
         Food food = garden.getFood();
 
         // Initialize both open and closed list
-        ArrayList<Node> open = new ArrayList<Node>();
-        ArrayList<Node> closed = new ArrayList<Node>();
-
-
+        List<Node> open = new ArrayList<Node>();
+        List<Node> closed = new ArrayList<Node>();
         // Add the start node
         open.add(start);
 
         // Loop until you find the end// the openList is not empty
         while (!open.isEmpty()) {
             // Get the current node
-           // let the currentNode equal the node with the least f value
+            // let the currentNode equal the node with the least f value
+
+            //Initialize child with current/start as its parent
+            start = open.get(0);
+            if (snake.contains(start) || !start.inBounds() || closed.contains(start)) {
+                continue;
+            }
+            if (!open.contains(start)) {
+                open.add(start);
+            } else {
+                //Compare Costs??
+            }
+            //remove the currentNode from the openList
+            open.remove(start);
+            //add the currentNode to the closedList
+            closed.add(start);
+
+
+            //if currentNode is the goal
+            if (start.getY() == food.getY() && start.getX() == food.getX()) {
+                //Congrats! You've found the end! Backtrack to get path
+                Stack<Node> route = new Stack<Node>();
+                while (start.getY() == start.getY() && start.getX() == start.getX()) {
+                    route.add(start);
+                    start = start.getParent();
+                }
+                while (!route.isEmpty()) {
+                    Direction routeDirection = start.directionTo(route.peek());
+                    snake.turnTo(routeDirection);
+                    start = route.pop();
+                }
+            }
+
+            // Generate children-let the children of the currentNode equal the adjacent-for each child in the children
             for (Direction direction : directions) {
                 //Initialize child with current/start as its parent
                 Node neighbor = new Node(start.moveTo(direction), start, food);
+
+                // Child is on the closedList--if child is in the closedList--continue to beginning of for loop
                 if (snake.contains(neighbor) || !neighbor.inBounds() || closed.contains(neighbor)) {
                     continue;
                 }
+                // Create the f values
+                double cost = neighbor.getCost();
+
                 if (!open.contains(neighbor)) {
-                    open.add(neighbor);
+
+                    // Child is already in openList--if child.position is in the openList's nodes positions
                 } else {
-                    //Compare Costs??
-                }
-
-
-                //remove the currentNode from the openList
-                open.remove(neighbor);
-                //add the currentNode to the closedList
-                closed.add(neighbor);
-
-                // Found the goal
-                //if currentNode is the goal
-
-                if (neighbor.getY() == food.getY() && neighbor.getX() == food.getX()) {
-                    //Congratz! You've found the end! Backtrack to get path
-                }
-
-                // Generate children
-                //let the children of the currentNode equal the adjacent nodes
-                //for each child in the children
-
-
-                for (int j = 0; j < directions.length; j++) {
-
-
-                    //Initialize child with current/start as its parent
-                    //Node neighbor = new Node(start.moveTo(directions[j]), start, food);
-
-                    // Child is on the closedList--if child is in the closedList--continue to beginning of for loop
-                    if (snake.contains(neighbor) || !neighbor.inBounds() || closed.contains(neighbor)) {
+                    //Compare Costs
+                    if (neighbor.getCost() > open.get(open.indexOf(neighbor)).getCost()) {
                         continue;
                     }
-                    // Create the f, g, and h values
-                    //child.g = currentNode.g + distance between child and current
-                    //child.h = distance from child to end
-                    //child.f = child.g + child.h
-                    double cost = neighbor.getCost();
-
-                    if (!open.contains(neighbor)) {
-                        open.add(neighbor);
-                    } else {
-                        //Compare Costs??
-                    }
-
                 }
-
-                // Child is already in openList
-                //if child.position is in the openList's nodes positions
-                //if the child.g is higher than the openList node's g
-                //continue to beginning of for loop
-                
+                // Child is already in openList--continue to beginning of for loop
+                open.add(neighbor);
             }
-
         }
-
     }
 }
