@@ -21,6 +21,7 @@ public class AStarStrategy implements SnakeStrategy {
         Food food = garden.getFood();
         List<Node> open = new ArrayList<Node>();
         List<Node> closed = new ArrayList<Node>();
+        Stack<Node> route = new Stack<Node>();
         // Add the start node
         open.add(start);
         // Loop until food is found/the openList is not empty
@@ -28,7 +29,7 @@ public class AStarStrategy implements SnakeStrategy {
             if (food == null) {
                 break;
             }
-            // Get the current node-let the currentNode equal the node with the least f value-Initialize child with current/start as its parent
+            // Get the current node-let the currentNode equal the node on the open list
             current = open.get(0);
 
             for (Node node : open) {
@@ -42,17 +43,17 @@ public class AStarStrategy implements SnakeStrategy {
 
             //if currentNode is the goal, backtrack to get path
             if (current.getX() == food.getX() && current.getY() == food.getY()) {
-                Stack<Node> route = new Stack<Node>();
-                while (current.getParent()!=start) {
+                while (current!=start) {
                     route.push(current);
                     current = current.getParent();
                 }
-                while (!route.isEmpty()) {
+                while (!(current.getX() == food.getX() && current.getY() == food.getY())) {
                     Direction routeDirection = current.directionTo(route.peek());
                     snake.turnTo(routeDirection);
                     current = route.pop();
+
                 }
-                continue;
+                break;
             }
 
             // Generate children-let the children of the currentNode equal the adjacent-for each child in the children
