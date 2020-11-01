@@ -11,22 +11,22 @@ import java.util.*;
  * https://www.youtube.com/watch?v=-L-WgKMFuhE
  */
 public class AStarStrategy implements SnakeStrategy {
-    private static List<Square> path = new ArrayList<>();
+    private  List<Square> path = new ArrayList<>();
     private List<Square> searchSpace = new ArrayList<>();
 
 
     @Override
     public void turnSnake(Snake snake, Garden garden) {
-
+        path.clear();
+        searchSpace.clear();
         Direction directions[] = Direction.values();
         Food food = garden.getFood();
         Square head = snake.getHead();
         if (food == null) {
             return;
         }
-       List<Node> open = new ArrayList<>();List<Node> closed = new ArrayList<>();
-
-
+       List<Node> open = new ArrayList<>();
+        List<Node> closed = new ArrayList<>();
 
         open.add(new Node(snake.getHead()));
 
@@ -40,7 +40,6 @@ public class AStarStrategy implements SnakeStrategy {
                 Node firstChild = getFirstChild(head, current);
                 Direction direction = head.directionTo(firstChild);
                 snake.turnTo(direction);
-                path.add(firstChild);
                 break;
             }
 
@@ -90,6 +89,7 @@ public class AStarStrategy implements SnakeStrategy {
         Node n = end;
         while (!n.getParent().equals(head)) {
             n = n.getParent();
+            path.add(n);
         }
         return n;
     }
