@@ -69,4 +69,14 @@ public class AStarStrategy implements SnakeStrategy {
             }
         }
     }
+
+    @Override
+    public List<Square> getPath() {
+        return null;
+    }
+
+    @Override
+    public List<Square> getSearchSpace() {
+        return null;
+    }
 }

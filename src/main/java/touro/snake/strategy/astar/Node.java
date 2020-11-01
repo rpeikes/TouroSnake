@@ -43,15 +43,7 @@ public class Node extends Square {
         return fromStart * 7 + fromEnd;
     }
 
-<<<<<<< HEAD
 
     }
 
 
-=======
-    @Override
-    public String toString() {
-        return String.format("Node{%d, %d = %f}", getX(), getY(), getCost());
-    }
-}
->>>>>>> 1c0afa9f8444b5b6b7bc9e9595c0350c68dea4c5

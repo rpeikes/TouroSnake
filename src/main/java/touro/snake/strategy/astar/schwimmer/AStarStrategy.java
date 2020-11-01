@@ -11,6 +11,10 @@ import java.util.*;
  * https://www.youtube.com/watch?v=-L-WgKMFuhE
  */
 public class AStarStrategy implements SnakeStrategy {
+    private static List<Square> path = new ArrayList<>();
+    private List<Square> searchSpace = new ArrayList<>();
+
+
     @Override
     public void turnSnake(Snake snake, Garden garden) {
 
@@ -20,9 +24,9 @@ public class AStarStrategy implements SnakeStrategy {
         if (food == null) {
             return;
         }
+       List<Node> open = new ArrayList<>();List<Node> closed = new ArrayList<>();
 
-        List<Node> open = new ArrayList<>();
-        List<Node> closed = new ArrayList<>();
+
 
         open.add(new Node(snake.getHead()));
 
@@ -30,11 +34,13 @@ public class AStarStrategy implements SnakeStrategy {
             Node current = getLowestCost(open);
             open.remove(current);
             closed.add(current);
+            searchSpace.add(current);
 
             if (current.equals(food)) {
                 Node firstChild = getFirstChild(head, current);
                 Direction direction = head.directionTo(firstChild);
                 snake.turnTo(direction);
+                path.add(firstChild);
                 break;
             }
 
@@ -50,10 +56,12 @@ public class AStarStrategy implements SnakeStrategy {
                     if (neighbor.getCost() < oldNeighbor.getCost()) {
                         open.remove(index);
                         open.add(neighbor);
+                        searchSpace.add(neighbor);
                     }
                 }
                 else {
                     open.add(neighbor);
+                    searchSpace.add(neighbor);
                 }
 
             }
@@ -63,13 +71,13 @@ public class AStarStrategy implements SnakeStrategy {
     }
 
     @Override
-    public List<Square> getPath() {
-        return Collections.emptyList();
+    public  List<Square> getPath() {
+        return path;
     }
 
     @Override
     public List<Square> getSearchSpace() {
-        return Collections.emptyList();
+        return searchSpace;
     }
 
     private Node getLowestCost(List<Node> nodes) {
