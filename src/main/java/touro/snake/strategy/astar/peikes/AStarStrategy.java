@@ -42,16 +42,14 @@ public class AStarStrategy implements SnakeStrategy {
             closed.add(current);
 
             //if currentNode is the goal, backtrack to get path
-            if (current.getX() == food.getX() && current.getY() == food.getY()) {
-                while (current!=start) {
+            if (current.equals(food)) {
+                while (!current.equals(start)) {
                     route.push(current);
                     current = current.getParent();
                 }
-                while (!(current.getX() == food.getX() && current.getY() == food.getY())) {
-                    Direction routeDirection = current.directionTo(route.peek());
-                    snake.turnTo(routeDirection);
-                    current = route.pop();
-
+                while (!current.equals(food)) {
+                    snake.turnTo(current.directionTo(route.peek()));
+                    current = route.pop();                                 
                 }
                 break;
             }
